@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact me</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/conact.css">
+    <link rel="shortcut icon" type="image/x-icon" href="img/m.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.css" integrity="sha512-x9WwyMYBnlXMNQ6kQ/Lyzu1NqIhLQKL5Oq6xByfXuRj7s9CskyCbLv/1IjqzJmXwFXWr0ov6jBV7Qbc0hh9nHg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <a class="btn" href="index.html"><i class="fa-solid fa-arrow-left"></i></a>
+
+    <main class="page-shell">
+        <section class="contact-card" aria-label="نموذج التواصل">
+            <div class="card-header">
+                <img class="brand-logo" src="img/m.png" alt="شعار قبة الصخرة">
+                <p class="eyebrow">Contact</p>
+                <h1>Contact me</h1>
+            </div>
+
+            <div class="contact-layout">
+                <form class="contact-form" id="contactForm" action="#" method="POST">
+                    <div style="display: none;" id="massgee" class="massgee">
+
+                    </div>
+                    <input type="hidden" name="access_key" value="185dc037-194e-4c11-88a9-e3d519ebc7c9">
+
+                    <div class="field-group">
+                        <input id="name" type="text" name="name" placeholder=" " required>
+                        <label for="name"><i class="fa-solid fa-user" aria-hidden="true"></i><span>Name</span></label>
+                    </div>
+
+                    <div class="field-group">
+                        <input id="email" type="email" name="email" placeholder=" " required>
+                        <label for="email"><i class="fa-solid fa-envelope" aria-hidden="true"></i><span>Email</span></label>
+                    </div>
+
+                    <div class="field-group">
+                        <textarea id="message" name="message" rows="5" placeholder=" " required></textarea>
+                        <label for="message"><i class="fa-solid fa-comment-dots" aria-hidden="true"></i><span>Message</span></label>
+                    </div>
+
+                    <button type="submit" id="submitBtn">Send a message
+                        <i class="fa-sharp fa-solid fa-paper-plane" style="color: rgb(242, 241, 241);"></i>
+                    </button>
+
+                    <div id="sent-message" class="sent-message" aria-live="polite">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <p>Your message has been sent successfully!</p>
+                    </div>
+                </form>
+                <div class="map-frame">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d624.0670378137078!2d35.057225121328784!3d32.408587191675956!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sar!2s!4v1791627306587!5m2!1sar!2s" title="موقعنا على الخريطة" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/index.js"></script>
+    <script src="js/conact.js"></script>
+</body>
+</html>

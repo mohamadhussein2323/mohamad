@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohamad Zaky | Creative Developer</title>
+    <!-- 仅保留必要的图标库 -->
+     <link rel="shortcut icon" type="image/x-icon" href="img/m.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;600&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* ================= 设计系统变量 ================= */
+        :root {
+            --bg-primary: #050505;
+            --bg-card: rgba(15, 15, 15, 0.6);
+            --bg-card-solid: #12141c;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.6);
+            --accent-color: #00d9ff;
+            --accent-purple: #7b2cff;
+            --accent-pink: #ff0080;
+            --font-main: 'Inter', 'Poppins', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        /* ================= RESET ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary); /* 备用纯色背景 */
+        }
+
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        /* ================= 动态极光背景 ================= */
+        .aurora-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 217, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(123, 44, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.05) 0%, transparent 60%);
+            animation: auroraShift 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes auroraShift {
+            0% { transform: scale(1) translate(0, 0); filter: hue-rotate(0deg); }
+            100% { transform: scale(1.1) translate(-20px, 20px); filter: hue-rotate(30deg); }
+        }
+
+        /* ================= 粒子画布 ================= */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ================= 布局结构 ================= */
+        .layout-wrapper {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            gap: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ================= 侧边栏 ================= */
+        .sidebar {
+            width: 300px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 40px;
+            height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 0;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .avatar-box {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(20%);
+            transition: filter 0.3s ease;
+        }
+
+        .avatar-box:hover img {
+            filter: grayscale(0%);
+        }
+
+        .profile-header h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-header .role {
+            font-family: var(--font-code);
+            color: var(--accent-color);
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-color);
+            border-color: var(--accent-color);
+            background: rgba(0, 217, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-menu {
+            list-style: none;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .nav-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-left: 2px solid transparent;
+            margin-left: -1px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            color: var(--text-primary);
+            border-left-color: var(--accent-color);
+            background: linear-gradient(90deg, rgba(0, 217, 255, 0.1), transparent);
+        }
+
+        .nav-menu li a i {
+            font-size: 1rem;
+            width: 20px;
+        }
+
+        /* ================= 主内容区 ================= */
+        .main-content {
+            flex-grow: 1;
+            padding: 40px 0;
+        }
+
+        section {
+            margin-bottom: 80px;
+            scroll-margin-top: 40px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: var(--text-primary);
+        }
+
+        .section-title .num {
+            font-family: var(--font-code);
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        /* ================= 玻璃态卡片基础样式 ================= */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .about-card {
+            padding: 30px;
+        }
+
+        .about-card p {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .about-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-card .highlight {
+            color: var(--accent-color);
+        }
+
+        /* ================= 技能栈 ================= */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+        }
+
+        .tech-item {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 20px rgba(0, 217, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tech-item i {
+            font-size: 2rem;
+        }
+
+        .tech-item span {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        /* ================= 项目展示 ================= */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .project-card {
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            border-color: rgba(0, 217, 255, 0.5);
+        }
+
+        .project-img {
+            width: 100%;
+            height: 180px;
+            background: var(--bg-card-solid);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+        }
+
+        .project-card:hover .project-img img {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .project-info {
+            padding: 20px;
+        }
+
+        .project-info h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .project-info p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .project-tags span {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            background: rgba(0, 217, 255, 0.1);
+            border-radius: 4px;
+            color: var(--accent-color);
+        }
+
+        /* ================= 联系方式 ================= */
+        .contact-container {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .contact-container h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .contact-container p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(90deg, var(--accent-color), var(--accent-purple));
+            color: #050505;
+            text-decoration: none;
+            font-weight: 800;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-family: var(--font-code);
+            box-shadow: 0 10px 20px rgba(0, 217, 255, 0.2);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0, 217, 255, 0.4);
+        }
+
+        /* ================= 响应式 ================= */
+        @media (max-width: 1024px) {
+            .layout-wrapper {
+                flex-direction: column;
+                padding: 0 16px;
+            }
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+                border-bottom: 1px solid var(--border-color);
+                margin-bottom: 20px;
+            }
+            .nav-menu {
+                display: flex;
+                list-style: none;
+                border-left: none;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .nav-menu li a {
+                border-left: none;
+                border-bottom: 2px solid transparent;
+                margin-left: 0;
+                padding: 8px 16px;
+            }
+            .nav-menu li a:hover,
+            .nav-menu li a.active {
+                border-left: none;
+                border-bottom-color: var(--accent-color);
+                background: transparent;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 动态极光背景 -->
+    <div class="aurora-bg"></div>
+    <!-- 粒子画布 -->
+    <canvas id="particle-canvas"></canvas>
+
+    <div class="layout-wrapper">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="profile-header">
+                <div class="avatar-box">
+                    <img src="img/mohamad2006.jpeg" alt="Mohamad Zaky">
+                </div>
+                <h1>Mohamad Zaky</h1>
+                <div class="role">Creative Developer</div>
+            </div>
+
+            <div class="social-links">
+                <a href="https://www.facebook.com/mohamad.hussein.346490" target="_blank" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/mohamad4_4zaky" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@mohamadzaky05" target="_blank" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://www.linkedin.com/in/mohamad-zaky-309762400/" target="_blank" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+                <a href="https://github.com/" target="_blank" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="#about" class="active"><i class="fa-solid fa-user"></i> About</a></li>
+                <li><a href="#skills"><i class="fa-solid fa-code"></i> Tech Stack</a></li>
+                <li><a href="#projects"><i class="fa-solid fa-folder-open"></i> Projects</a></li>
+                <li><a href="#contact"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+            </ul>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            
+            <!-- 关于我 -->
+            <section id="about">
+                <h2 class="section-title"><span class="num">01.</span> About Me</h2>
+                <div class="glass-card about-card">
+                    <p>Hello! I'm Mohamad, a creative developer based in <span class="highlight">Palestine</span>. I specialize in building exceptional digital experiences from concept to deployment.</p>
+                    <p>With a strong foundation in both frontend and backend technologies, I enjoy crafting clean, efficient, and scalable code. My goal is to bridge the gap between design and technical implementation.</p>
+                    <p>When I'm not coding, you can find me exploring new tech trends, contributing to open-source, or designing UI in Figma.</p>
+                </div>
+            </section>
+
+            <!-- 技能栈 -->
+            <section id="skills">
+                <h2 class="section-title"><span class="num">02.</span> Tech Stack</h2>
+                <div class="tech-grid">
+                    <div class="tech-item"><i class="fa-brands fa-html5" style="color: #E34F26;"></i><span>HTML5</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-css3-alt" style="color: #1572B6;"></i><span>CSS3</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-js" style="color: #F7DF1E;"></i><span>JavaScript</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-php" style="color: #777BB4;"></i><span>PHP</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-react" style="color: #61DAFB;"></i><span>React</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-node-js" style="color: #339933;"></i><span>Node.js</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-python" style="color: #3776AB;"></i><span>Python</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-java" style="color: #007396;"></i><span>Java</span></div>
+                    <div class="tech-item"><i class="fa-solid fa-database" style="color: #4479A1;"></i><span>MySQL</span></div>
+                    <div class="tech-item"><i class="fa-solid fa-server" style="color: #47A248;"></i><span>MongoDB</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-git-alt" style="color: #F05032;"></i><span>Git</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-docker" style="color: #2496ED;"></i><span>Docker</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-aws" style="color: #FF9900;"></i><span>AWS</span></div>
+                    <div class="tech-item"><i class="fa-brands fa-figma" style="color: #F24E1E;"></i><span>Figma</span></div>
+                </div>
+            </section>
+
+            <!-- 项目展示 -->
+            <section id="projects">
+                <h2 class="section-title"><span class="num">03.</span> Projects</h2>
+                <div class="projects-grid">
+                    <div class="glass-card project-card">
+                        <div class="project-img">
+                            <img src="img/sh.png" alt="Project 1">
+                        </div>
+                        <div class="project-info">
+                            <h3>website sharaya school driving</h3>
+                            <p>website for sharaya school driving</p>
+                            <div class="project-tags">
+                                <span>React</span><span>Node.js</span><span>MongoDB</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="glass-card project-card">
+                        <div class="project-img">
+                            <img src="img/kasher.png" alt="Project 2">
+                        </div>
+                        <div class="project-info">
+                            <h3>kasher</h3>
+                            <p>A modern e-commerce solution built with a focus on user experience and performance.</p>
+                            <div class="project-tags">
+                                <span>PHP</span><span>MySQL</span><span>JavaScript</span>
+                            </div>
+                        </div>
+                    </div>
+
+               
+                </div>
+            </section>
+
+    
+            <section id="contact">
+                <h2 class="section-title"><span class="num">04.</span> Get In Touch</h2>
+                <div class="glass-card contact-container">
+                    <h3>Let's Build Something Amazing</h3>
+                    <p>I'm currently available for freelance work and full-time positions. Drop me a line!</p>
+                    <a href="conact.html" class="cta-btn">Contact Me</a>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // ================= 滚动监听导航高亮 =================
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-menu li a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const scrollPos = window.pageYOffset + 100;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                
+                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // ================= 粒子背景动画 =================
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.opacity = Math.random() * 0.5 + 0.1;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const numParticles = Math.floor((canvas.width * canvas.height) / 8000);
+            for (let i = 0; i < numParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+    </script>
+
+</body>
+</html>
